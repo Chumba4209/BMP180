@@ -1,18 +1,10 @@
 #include <Arduino.h>
-#include <WiFi.h>
-#include <HTTPClient.h>
 #include <SPI.h>
 #include <Wire.h>
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
 
 #include<Adafruit_BMP085.h>
-
-const char* ssid = "Robotics Institute of Kenya";
-const char* password = "RObOT1C&#357";
-
-// Your Flask server address (change this to match YOUR PC )
-String serverURL = "http://192.168.1.56:5000/api/sensor";
 
 Adafruit_BMP085 bmp;
 
@@ -27,20 +19,9 @@ void setup() {
   // put your setup code here, to run once:
   Serial.begin(115200);
 
-  // WiFi connect
-  WiFi.begin(ssid, password);
-  Serial.print("Connecting to WiFi");
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-    Serial.print(".");
-  }
-  Serial.println("\nWiFi connected");
-  
-//bmp connect
   bmp.begin();
+  display.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS);
 
-//display begin
-   display.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS);
    display.clearDisplay();
    display.display();
    delay(2000);
@@ -66,32 +47,5 @@ void loop() {
 
   
   Serial.printf("Temp: %.3f*C Pressure: %.2fPa Altitude: %.3fm\n", temp, press, alt);
-  //delay(3000);
-
-  if (WiFi.status() == WL_CONNECTED) {
-
-    HTTPClient http;
-    http.begin(serverURL);
-
-    http.addHeader("Content-Type", "application/json");
-
-    // JSON you send to Flask
-    String jsonData = "{\"temperature\":" + String(temp) +
-                      ",\"pressure\":" + String(press) +",\"altitude\":"+String(alt) + "}";
-
-    int httpResponseCode = http.POST(jsonData);
-
-    Serial.print("Server Response: ");
-    Serial.println(httpResponseCode);
-
-    if(httpResponseCode > 0){
-      String response = http.getString();
-      Serial.println(response);
-    } else {
-      Serial.println("Error sending POST request");
-    }
-
-    http.end();
-  }
-  delay(5000);
+  delay(3000);
 }
