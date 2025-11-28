@@ -12,7 +12,7 @@ const char* ssid = "Robotics Institute of Kenya";
 const char* password = "RObOT1C&#357";
 
 // Your Flask server address (change this to match YOUR PC )
-String serverURL = "http://192.168.1.56:5000/api/sensor";
+String serverURL = "http://192.168.1.56:5000/api/bmp180";
 
 Adafruit_BMP085 bmp;
 
